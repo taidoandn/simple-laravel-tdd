@@ -1,0 +1,15 @@
+bootstrap/cache/*
+
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+
+.dockerignore
+
+node_modules
+vendor
+logs
+*.log
+supervisord.pid

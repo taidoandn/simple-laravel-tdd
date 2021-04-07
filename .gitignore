@@ -13,3 +13,4 @@ yarn-error.log
 .docker/dbdata
 *.log
 supervisord.pid
+**/.vscode/**

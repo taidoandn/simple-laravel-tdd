@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ContactResource;
 
 class ContactController extends Controller
 {
@@ -22,6 +23,6 @@ class ContactController extends Controller
 
     public function show(Contact $contact)
     {
-        return $contact;
+        return new ContactResource($contact);
     }
 }

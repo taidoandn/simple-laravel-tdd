@@ -24,4 +24,9 @@ class ContactController extends Controller
     {
         $contact->update($request->validated());
     }
+
+    public function destroy(Contact $contact)
+    {
+        $contact->delete();
+    }
 }

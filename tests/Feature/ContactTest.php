@@ -86,6 +86,16 @@ class ContactTest extends TestCase
         $this->assertEquals('ABC Company', $contact->company);
     }
 
+    /** @test */
+    public function test_a_contact_can_be_deleted()
+    {
+        $contact = factory(Contact::class)->create();
+
+        $this->delete('/api/contacts/' . $contact->id);
+
+        $this->assertCount(0, Contact::all());
+    }
+
     private function data()
     {
         return [

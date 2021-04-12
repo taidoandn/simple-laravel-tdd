@@ -18,6 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
+    Route::post('/login', 'Api\AuthController@login');
+    Route::post('/register', 'Api\AuthController@register');
+});
+
 Route::post('/contacts', 'Api\ContactController@store');
 Route::get('/contacts/{contact}', 'Api\ContactController@show');
 Route::patch('/contacts/{contact}', 'Api\ContactController@update');

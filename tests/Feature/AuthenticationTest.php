@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -70,13 +69,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function test_an_authenticate_user_can_logout()
     {
-        $user = factory(User::class)->create();
-
-        $token = JWTAuth::fromUser($user);
-
-        $response = $this->postJson('/api/auth/logout', [], [
-            'Authorization' => 'Bearer ' . $token
-        ]);
+        $response = $this->apiAs('POST', '/api/auth/logout');
 
         $response->assertStatus(200)
             ->assertExactJson([
@@ -89,11 +82,7 @@ class AuthenticationTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $token = JWTAuth::fromUser($user);
-
-        $reponse = $this->getJson('/api/auth/me', [
-            'Authorization' => 'Bearer ' . $token
-        ]);
+        $reponse = $this->apiAs('GET', '/api/auth/me', [], [], $user);
 
         $reponse->assertStatus(200)
             ->assertJson([

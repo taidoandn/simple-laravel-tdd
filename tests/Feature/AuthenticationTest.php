@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -33,8 +34,6 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function test_a_user_can_register_an_account()
     {
-        $user = factory(User::class)->make();
-
         $this->postJson('/api/auth/register', $this->data())
             ->assertStatus(200)
             ->assertJsonStructure([
@@ -68,12 +67,48 @@ class AuthenticationTest extends TestCase
         $this->assertCount(0, User::all());
     }
 
+    /** @test */
+    public function test_an_authenticate_user_can_logout()
+    {
+        $user = factory(User::class)->create();
+
+        $token = JWTAuth::fromUser($user);
+
+        $response = $this->postJson('/api/auth/logout', [], [
+            'Authorization' => 'Bearer ' . $token
+        ]);
+
+        $response->assertStatus(200)
+            ->assertExactJson([
+                'message' => 'Successfully logged out'
+            ]);
+    }
+
+    /** @test */
+    public function test_can_get_authenticated_user_data_from_me_endpoint()
+    {
+        $user = factory(User::class)->create();
+
+        $token = JWTAuth::fromUser($user);
+
+        $reponse = $this->getJson('/api/auth/me', [
+            'Authorization' => 'Bearer ' . $token
+        ]);
+
+        $reponse->assertStatus(200)
+            ->assertJson([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ]);
+    }
+
     private function data()
     {
         return [
             'name' => 'John Doe',
             'email' => 'john@doe.com',
-            'password' => $password = bcrypt('secret'),
+            'password' => $password = 'secret',
             'password_confirmation' => $password,
         ];
     }
